@@ -118,7 +118,7 @@ function setBubbleTarget(e) {
     }, 500).addClass('nextBubble').removeClass('waitingBubble');
     addWaitingBubble();
     // toroljuk a golyot, ha eltalaltunk hasonlo szinut
-    $('.nextBubble').promise().done(function(){
+    $('.nextBubble').promise().done(function(){     // igy az animacio utan fog meghivodni
         checkIfNeedToPop();
     });
 }
@@ -201,7 +201,7 @@ function checkIfNeedToPop() {
                     $('#' + bubbleList[i].id).remove();
                     delete bubbleList[i];
                     $('#' + lastBubble.id).remove();
-                    delete lastBubble;
+                    delete bubbleList[bubbleList.length-3];
                 }
             }
         }
