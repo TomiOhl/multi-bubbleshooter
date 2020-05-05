@@ -13,7 +13,10 @@ function initBubbles() {
         for (let j = 0; j < N; j++) {   // oszlopokon
             let bubble = $('<div></div>');
             bubble.addClass('bubble');
-            bubble.addClass(getColor());
+            let itemColor = getColor();
+            bubble.addClass(itemColor);
+            let itemId = i*(N-1)+j; // gyakorlatilag hanyadik
+            bubble.attr('id', itemId);
             bubble.css({
                 width: bubbleSize,
                 height: bubbleSize,
@@ -21,7 +24,7 @@ function initBubbles() {
                 left: j * bubbleSize
             });
             bubble.appendTo(gamearea);
-            bubbleList.push({x: j*bubbleSize, y: i*bubbleSize});
+            bubbleList.push({id: itemId, color: itemColor, x: j*bubbleSize, y: i*bubbleSize});
         }
     }
 }
@@ -59,13 +62,15 @@ function initShooterPad() {
     pad.appendTo(gamearea);
 }
 
-// legyen a kilovendo golyo a padon
+// legyen mar indulaskor kilovendo golyo a padon
 function addNextBubble() {
     let bubble = $('<div></div>');
-    nextBubbleColor = getColor(); // eltaroljuk a kilovendo golyo szinet
     bubble.addClass('bubble');
     bubble.addClass('nextBubble');  // ez alapjan fogjuk megkulonboztetni
-    bubble.addClass(nextBubbleColor);
+    let itemColor = getColor();
+    bubble.addClass(itemColor);
+    let itemId = bubbleList.length;
+    bubble.attr('id', itemId);
     bubble.css({
         width: bubbleSize,
         height: bubbleSize,
@@ -73,15 +78,18 @@ function addNextBubble() {
         top: bubbleSize * (N-1)
     });
     bubble.appendTo(gamearea);
+    bubbleList.push({id: itemId, color: itemColor, x: bubbleSize * (N/2) - (bubbleSize/2), y: bubbleSize * (N-1)});
 }
 
 // legyen a most kilovendo utan kovetkezo golyo a pad szelen
 function addWaitingBubble() {
     let bubble = $('<div></div>');
-    waitingBubbleColor = getColor(); //eltaroljuk a varakozo golyo szinet
     bubble.addClass('bubble');
     bubble.addClass('waitingBubble'); // ez alapjan fogjuk megkulonboztetni
-    bubble.addClass(waitingBubbleColor);
+    let itemColor = getColor();
+    bubble.addClass(itemColor);
+    let itemId = bubbleList.length;
+    bubble.attr('id', itemId);
     bubble.css({
         width: 0,
         height: 0,
@@ -94,6 +102,7 @@ function addWaitingBubble() {
         top: bubbleSize * (N-1)
     }, 500);
     bubble.appendTo(gamearea);
+    bubbleList.push({id: itemId, color: itemColor, x: 0, y: bubbleSize * (N-1)});
 }
 
 // egerkattintas pozicioja a gamearean belul
@@ -111,7 +120,7 @@ function setBubbleTarget(e) {
     addWaitingBubble();
 }
 
-// a targetY kiszamolasa
+// a targetY kiszamolasa az alapjan, hogy a valasztott X koordinatanal milyen alacsonyan van a legalacsonyabban levo golyo
 function calcTargetY() {
     let maxY = 0;
     for (const elem of bubbleList) {
@@ -143,7 +152,9 @@ function shoot() {
             }
         }
     });
-    bubbleList.push({x:targetX, y:targetY});
+    // frissitsuk a bubble eltarolt koordinatait
+    bubbleList[bubbleList.length-2].x = targetX;
+    bubbleList[bubbleList.length-2].y = targetY;
     bubble.removeClass('nextBubble');
 }
 
