@@ -144,7 +144,8 @@ function calcTargetX() {
 function calcTargetY() {
     let maxY = 0;
     for (const elem of bubbleList) {
-        if (elem.x > (targetX-bubbleSize/2) &&
+        if (elem != undefined &&
+            elem.x > (targetX-bubbleSize/2) &&
             elem.x < (targetX+bubbleSize/2) ) {
             if (elem.y > maxY) {
                 maxY = elem.y;
@@ -183,12 +184,23 @@ function shoot() {
 function checkIfNeedToPop() {
     // szomszedos buborekok meghatarozasa
     let lastBubble = bubbleList[bubbleList.length-2];
-    //let rightBubble = 
-    //let leftBubble = 
-    //let upperRightBubble = 
-    //let upperBubble = 
-    //let upperLeftBubble = 
-    //if (lastBubble.id == rightBubble.id) {}
+    for (let i=0; i < bubbleList.length; i++) {
+        if (bubbleList[i] != undefined) {  
+            if ( 
+                (bubbleList[i].x == lastBubble.x + bubbleSize) && (bubbleList[i].y == lastBubble.y) ||  // jobbra
+                (bubbleList[i].x == lastBubble.x - bubbleSize) && (bubbleList[i].y == lastBubble.y) ||  // balra
+                (bubbleList[i].x == lastBubble.x) && (bubbleList[i].y == lastBubble.y-bubbleSize) ||    // fent
+                (bubbleList[i].x == lastBubble.x + bubbleSize) && (bubbleList[i].y == lastBubble.y-bubbleSize) ||   // jobb fent
+                (bubbleList[i].x == lastBubble.x - bubbleSize) && (bubbleList[i].y == lastBubble.y-bubbleSize)  // bal fent
+            ) {
+                // ha a szin egyezik, toroljuk
+                if (bubbleList[i].color == lastBubble.color){
+                    $('#' + bubbleList[i].id).remove();
+                    delete bubbleList[i];
+                }
+            }
+        }
+    }
 }
 
 // kvazi main
