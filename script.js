@@ -2,6 +2,7 @@ let N = 10; // oszlop, sor
 let bubbleSize = 600 / N; // mert 600px a gameareank
 let gamearea;
 let pad;
+let bubbleList = [];    // a palyan levo golyok kooordinatainak
 let nextBubbleColor, waitingBubbleColor;
 let gameAreaOffset; // gamearea offsetje
 let targetX, targetY;   // annak koordinataja, ahova loni fogunk
@@ -20,6 +21,7 @@ function initBubbles() {
                 left: j * bubbleSize
             });
             bubble.appendTo(gamearea);
+            bubbleList.push({x: j*bubbleSize, y: i*bubbleSize});
         }
     }
 }
@@ -90,26 +92,62 @@ function addWaitingBubble() {
         width: bubbleSize,
         height: bubbleSize,
         top: bubbleSize * (N-1)
-    }, 750);
+    }, 500);
     bubble.appendTo(gamearea);
 }
 
 // egerkattintas pozicioja a gamearean belul
 function setBubbleTarget(e) {
     targetX = e.pageX - gameAreaOffset.left - bubbleSize/2;
-    targetY = e.pageY - gameAreaOffset.top;
+    // targetY = e.pageY - gameAreaOffset.top;  // ez akkor, ha szellemgolyok vannak
+    // targetY = bubbleList[bubbleList.length-1].y + bubbleSize;
+    targetY = calcTargetY();
     // kovetkezo golyo odamozgatasa
-    $('.nextBubble').animate({
-        left: targetX,
-        top: targetY
-    }, 750).removeClass('nextBubble');
+    shoot();
     // varakozo golyo legyen a kovetkezo golyo, jojjon uj varakozo
     $('.waitingBubble').animate({
         left: bubbleSize * (N/2) - (bubbleSize/2),
-    }, 750).addClass('nextBubble').removeClass('waitingBubble');
+    }, 500).addClass('nextBubble').removeClass('waitingBubble');
     addWaitingBubble();
-  }
+}
 
+// a targetY kiszamolasa
+function calcTargetY() {
+    let maxY = 0;
+    for (const elem of bubbleList) {
+        if (elem.x > (targetX-bubbleSize/2) &&
+            elem.x < (targetX+bubbleSize/2) ) {
+            if (elem.y > maxY) {
+                maxY = elem.y;
+            }
+        }
+    }
+    return(maxY + bubbleSize);
+}
+
+// golyo kivalasztott helyre mozgatasanak logikaja
+function shoot() {
+    let bubble = $('.nextBubble');
+    
+    bubble.animate({left: targetX, top: targetY}, {
+        duration: 500,
+        step: function(now, fx) {
+            // itt nem a targetX-et, hanem az eppen repulo nextBubble x-et kell hasonlitani
+            if (targetX === bubbleSize*(N-0.5)) { // jobbrol vissza balra
+                targetX = 300;    // ehelyett kiszamolni ezt es targetY-t is
+                $(this).stop().animate({left: targetX, top: targetY}, 500);
+            }
+            else if (targetX == -bubbleSize/2) {  // balrol vissza jobbra
+                targetX = 300;  // ehelyett kiszamolni ezt es targetY-t is
+                $(this).stop().animate({left: targetX, top: targetY}, 500);
+            }
+        }
+    });
+    bubbleList.push({x:targetX, y:targetY});
+    bubble.removeClass('nextBubble');
+}
+
+// kvazi main
 $(document).ready(function () {
     gamearea = $('#gamearea');
     initBubbles();
