@@ -117,6 +117,10 @@ function setBubbleTarget(e) {
         left: bubbleSize * (N/2) - (bubbleSize/2),
     }, 500).addClass('nextBubble').removeClass('waitingBubble');
     addWaitingBubble();
+    // toroljuk a golyot, ha eltalaltunk hasonlo szinut
+    $('.nextBubble').promise().done(function(){
+        checkIfNeedToPop();
+    });
 }
 
 // a targetX igazitasa, hogy oszlopban legyen
@@ -177,13 +181,12 @@ function shoot() {
     bubbleList[bubbleList.length-2].x = targetX;
     bubbleList[bubbleList.length-2].y = targetY;
     bubble.removeClass('nextBubble');
-    checkIfNeedToPop();
 }
 
 // ha hasonlo szinuhoz er a kilott golyo, toroljuk azokat
 function checkIfNeedToPop() {
     // szomszedos buborekok meghatarozasa
-    let lastBubble = bubbleList[bubbleList.length-2];
+    let lastBubble = bubbleList[bubbleList.length-3];
     for (let i=0; i < bubbleList.length; i++) {
         if (bubbleList[i] != undefined) {  
             if ( 
@@ -197,6 +200,8 @@ function checkIfNeedToPop() {
                 if (bubbleList[i].color == lastBubble.color){
                     $('#' + bubbleList[i].id).remove();
                     delete bubbleList[i];
+                    $('#' + lastBubble.id).remove();
+                    delete lastBubble;
                 }
             }
         }
