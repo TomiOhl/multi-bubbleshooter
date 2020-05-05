@@ -78,7 +78,7 @@ function addNextBubble() {
         top: bubbleSize * (N-1)
     });
     bubble.appendTo(gamearea);
-    bubbleList.push({id: itemId, color: itemColor, x: bubbleSize * (N/2) - (bubbleSize/2), y: bubbleSize * (N-1)});
+    bubbleList.push({id: itemId, color: itemColor, x: undefined, y: undefined});
 }
 
 // legyen a most kilovendo utan kovetkezo golyo a pad szelen
@@ -102,14 +102,13 @@ function addWaitingBubble() {
         top: bubbleSize * (N-1)
     }, 500);
     bubble.appendTo(gamearea);
-    bubbleList.push({id: itemId, color: itemColor, x: 0, y: bubbleSize * (N-1)});
+    bubbleList.push({id: itemId, color: itemColor, x: undefined, y: undefined});
 }
 
 // egerkattintas pozicioja a gamearean belul
 function setBubbleTarget(e) {
     targetX = e.pageX - gameAreaOffset.left - bubbleSize/2;
-    // targetY = e.pageY - gameAreaOffset.top;  // ez akkor, ha szellemgolyok vannak
-    // targetY = bubbleList[bubbleList.length-1].y + bubbleSize;
+    targetX = calcTargetX();    // felulrijuk az oszlopba rakott valtozattal
     targetY = calcTargetY();
     // kovetkezo golyo odamozgatasa
     shoot();
@@ -118,6 +117,27 @@ function setBubbleTarget(e) {
         left: bubbleSize * (N/2) - (bubbleSize/2),
     }, 500).addClass('nextBubble').removeClass('waitingBubble');
     addWaitingBubble();
+}
+
+// a targetX igazitasa, hogy oszlopban legyen
+function calcTargetX() {
+    let offsetFromCol = bubbleSize; // offsetekben azt nezzuk, hogy az oszlopok szeletol milyen messze vagyunk
+    let colStart = 0;
+    for (let i = 0; i < N*bubbleSize; i++) {
+        if (i % bubbleSize == 0) {  //itt az i valoban az oszlopok bal szele
+            let balOffset = targetX - i;
+            if (balOffset < offsetFromCol && balOffset >= 0) {
+                offsetFromCol = balOffset;
+                colStart = i;
+            }
+            let jobbOffset = i - targetX;
+            if (jobbOffset < offsetFromCol && jobbOffset >= 0) {
+                offsetFromCol = jobbOffset;
+                colStart = i;
+            }
+        }
+    }
+    return(colStart);
 }
 
 // a targetY kiszamolasa az alapjan, hogy a valasztott X koordinatanal milyen alacsonyan van a legalacsonyabban levo golyo
@@ -156,6 +176,19 @@ function shoot() {
     bubbleList[bubbleList.length-2].x = targetX;
     bubbleList[bubbleList.length-2].y = targetY;
     bubble.removeClass('nextBubble');
+    checkIfNeedToPop();
+}
+
+// ha hasonlo szinuhoz er a kilott golyo, toroljuk azokat
+function checkIfNeedToPop() {
+    // szomszedos buborekok meghatarozasa
+    let lastBubble = bubbleList[bubbleList.length-2];
+    //let rightBubble = 
+    //let leftBubble = 
+    //let upperRightBubble = 
+    //let upperBubble = 
+    //let upperLeftBubble = 
+    //if (lastBubble.id == rightBubble.id) {}
 }
 
 // kvazi main
