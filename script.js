@@ -187,24 +187,41 @@ function shoot() {
 function checkIfNeedToPop() {
     // szomszedos buborekok meghatarozasa
     let lastBubble = bubbleList[bubbleList.length-3];
+    let somethingWasDeleted = false;
     for (let i=0; i < bubbleList.length; i++) {
         if (bubbleList[i] != undefined) {  
             if ( 
-                (bubbleList[i].x == lastBubble.x + bubbleSize) && (bubbleList[i].y == lastBubble.y) ||  // jobbra
-                (bubbleList[i].x == lastBubble.x - bubbleSize) && (bubbleList[i].y == lastBubble.y) ||  // balra
-                (bubbleList[i].x == lastBubble.x) && (bubbleList[i].y == lastBubble.y-bubbleSize) ||    // fent
-                (bubbleList[i].x == lastBubble.x + bubbleSize) && (bubbleList[i].y == lastBubble.y-bubbleSize) ||   // jobb fent
-                (bubbleList[i].x == lastBubble.x - bubbleSize) && (bubbleList[i].y == lastBubble.y-bubbleSize)  // bal fent
+                (bubbleList[i].x == lastBubble.x + bubbleSize) && (bubbleList[i].y >= lastBubble.y-bubbleSize) && (bubbleList[i].y <= lastBubble.y+bubbleSize) || // jobbra
+                (bubbleList[i].x == lastBubble.x - bubbleSize) && (bubbleList[i].y >= lastBubble.y-bubbleSize) && (bubbleList[i].y <= lastBubble.y+bubbleSize) || // balra
+                (bubbleList[i].x == lastBubble.x) && ( (bubbleList[i].y == lastBubble.y-bubbleSize) || (bubbleList[i].y == lastBubble.y+bubbleSize) )   // fent es lent
             ) {
-                // ha a szin egyezik, toroljuk
+                // ha a szin egyezik, animalva toroljuk
                 if (bubbleList[i].color == lastBubble.color){
-                    $('#' + bubbleList[i].id).remove();
+                    $('#' + bubbleList[i].id).animate({     // kozeppontba megy ossze
+                        top: bubbleList[i].y + bubbleSize/2,
+                        left: bubbleList[i].x + bubbleSize/2,
+                        width: 0,
+                        height: 0
+                    }, 500).promise().done(function(){     // igy az animacio utan fog torlodni
+                        $(this).remove();
+                    });
                     delete bubbleList[i];
-                    $('#' + lastBubble.id).remove();
-                    delete bubbleList[bubbleList.length-3];
+                    somethingWasDeleted = true;
                 }
             }
         }
+    }
+    // ha volt valami torlodve, mi magunk is torlodunk
+    if (somethingWasDeleted) {
+        $('#' + lastBubble.id).animate({     // kozeppontba megy ossze
+            top: lastBubble.y + bubbleSize/2,
+            left: lastBubble.x + bubbleSize/2,
+            width: 0,
+            height: 0
+        }, 500).promise().done(function(){     // igy az animacio utan fog torlodni
+            $(this).remove();
+        });
+        delete bubbleList[bubbleList.length-3];
     }
 }
 
