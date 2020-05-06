@@ -6,6 +6,8 @@ let bubbleList = new Array(100);    // a palyan levo golyoknak, index: sorszam, 
 let nextBubbleColor, waitingBubbleColor;
 let gameAreaOffset; // gamearea offsetje
 let targetX, targetY;   // annak koordinataja, ahova loni fogunk
+let newTargetX = 0;    // ebben lesz a cel, ha visszapattan a golyo
+let origTargetY;
 let lastBubbleId = 49;  // legutobb lerakott golyo id-je
 
 // kiindulasi golyok lerakasa
@@ -16,7 +18,7 @@ function initBubbles() {
             bubble.addClass('bubble');
             let itemColor = getColor();
             bubble.addClass(itemColor);
-            let itemId = i*10+j; // gyakorlatilag hanyadik
+            let itemId = i*N+j; // gyakorlatilag hanyadik
             bubble.attr('id', itemId);
             bubble.css({
                 width: bubbleSize,
@@ -103,6 +105,7 @@ function addWaitingBubble() {
 // egerkattintas pozicioja a gamearean belul
 function setBubbleTarget(e) {
     targetX = e.pageX - gameAreaOffset.left - bubbleSize/2;
+    origTargetY = e.pageY - gameAreaOffset.top;
     targetX = calcTargetX();    // felulrijuk az oszlopba rakott valtozattal
     targetY = calcTargetY();
     // kovetkezo golyo odamozgatasa, mentese a tombbe
@@ -137,6 +140,11 @@ function calcTargetX() {
             }
         }
     }
+    //  visszapattanashoz, mockolt parameterekkel
+    if (origTargetY > 6*bubbleSize && (colStart == 0 || colStart == (N-1)*bubbleSize))
+        newTargetX = 5*bubbleSize;
+    else
+        newTargetX = 0;
     return(colStart);
 }
 
@@ -172,20 +180,12 @@ function calcCoordFromIndex(index) {
 // golyo kivalasztott helyre mozgatasanak logikaja
 function shoot() {
     let bubble = $('.nextBubble');
-    bubble.animate({left: targetX, top: targetY}, {
-        duration: 500,
-        step: function(now, fx) {
-            // itt nem a targetX-et, hanem az eppen repulo nextBubble x-et kell hasonlitani
-            if (targetX === bubbleSize*(N-0.5)) { // jobbrol vissza balra
-                targetX = 300;    // ehelyett kiszamolni ezt es targetY-t is
-                $(this).stop().animate({left: targetX, top: targetY}, 500);
-            }
-            else if (targetX == -bubbleSize/2) {  // balrol vissza jobbra
-                targetX = 300;  // ehelyett kiszamolni ezt es targetY-t is
-                $(this).stop().animate({left: targetX, top: targetY}, 500);
-            }
-        }
-    });
+    // visszapattanas, sajnos elegge mockolt jellegu, bugos af de meg van animalva
+    if (newTargetX == 0)
+        bubble.animate({left: targetX, top: targetY}, 500);
+    else {
+        bubble.animate({left: targetX, top: origTargetY}, 500).animate({left: newTargetX, top: targetY}, 500);
+    }
     // adjuk meg az id-t a divnek, mentsuk tombbe
     lastBubbleId = (targetX / bubbleSize) + (targetY / bubbleSize)*10;    //mert minden egyes sor 10 elemet jelent
     bubbleList[lastBubbleId] = nextBubbleColor;
