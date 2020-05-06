@@ -9,6 +9,7 @@ let targetX, targetY;   // annak koordinataja, ahova loni fogunk
 let newTargetX = 0;    // ebben lesz a cel, ha visszapattan a golyo
 let origTargetY, targetYCenter; // visszapattanashoz
 let lastBubbleId = 49;  // legutobb lerakott golyo id-je
+let score = 0;
 
 // kiindulasi golyok lerakasa
 function initBubbles() {
@@ -240,6 +241,7 @@ function checkIfNeedToPop() {
             }, 500).promise().done(function(){     // igy az animacio utan fog torlodni
                 $(this).remove();
             });
+            score++;
             delete bubbleList[elem];
             somethingWasDeleted = true;
         }
@@ -255,6 +257,7 @@ function checkIfNeedToPop() {
         }, 500).promise().done(function(){     // igy az animacio utan fog torlodni
             $(this).remove();
         });
+        $('#score').text(score);
         delete bubbleList[lastBubbleId];
     }
 }

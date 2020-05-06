@@ -19,6 +19,15 @@ body {
     background-color: bisque;
     border: 4px solid bisque;
  }
+ #scorediv {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -325px;
+    margin-left: -300px;
+    height: 25px;
+    font-size: large;
+ }
 .bubble {
     border-radius: 100%;
     position: absolute;
