@@ -208,9 +208,24 @@ function shoot() {
 function checkIfNeedToPop() {
     let somethingWasDeleted = false;
     // szomszedos buborekok indexei
-    let susedIndexes = [lastBubbleId-11, lastBubbleId-10, lastBubbleId-9,
-                        lastBubbleId-1, lastBubbleId+1,
-                        lastBubbleId+9, lastBubbleId+10, lastBubbleId+11];
+    // lastBubbleId 10-zel osztva 0 maradek: bal szelen vagyunk, 9 maradek: jobb szelen vagyunk
+    let susedIndexes;
+    switch (true) {
+        case (lastBubbleId % 10 == 0):
+            susedIndexes = [lastBubbleId-10, lastBubbleId-9,
+                            lastBubbleId+1,
+                            lastBubbleId+10, lastBubbleId+11];
+            break;
+        case (lastBubbleId % 10 == 9):
+            susedIndexes = [lastBubbleId-11, lastBubbleId-10,
+                            lastBubbleId-1,
+                            lastBubbleId+9, lastBubbleId+10];
+            break;
+        default:
+            susedIndexes = [lastBubbleId-11, lastBubbleId-10, lastBubbleId-9,
+                            lastBubbleId-1, lastBubbleId+1,
+                            lastBubbleId+9, lastBubbleId+10, lastBubbleId+11];
+    }
     // megnezzuk a bubbleList ezen indexeit
     for (elem of susedIndexes) {
         if (bubbleList[elem] != null && bubbleList[elem] == nextBubbleColor) {
