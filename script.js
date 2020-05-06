@@ -10,6 +10,23 @@ let newTargetX = 0;    // ebben lesz a cel, ha visszapattan a golyo
 let origTargetY, targetYCenter; // visszapattanashoz
 let lastBubbleId = 49;  // legutobb lerakott golyo id-je
 let score = 0;
+let popSound = new Audio('audio/sfx00047.wav');
+let popSound2 = new Audio('audio/sfx00158.wav');
+let winAudio = new Audio('audio/mission_passed.mp3');
+let lostAudio = new Audio('audio/mission_failed.mp3');
+let bgMusic = new Audio('audio/sfx00031.wav');
+bgMusic.loop = true;
+
+function playBgMusic() {
+    if(!bgMusic.paused) {
+        bgMusic.pause();
+        $('#music').css({color: 'white'});
+    }
+    else {
+        bgMusic.play();
+        $('#music').css({color: 'goldenrod'});
+    }
+}
 
 // kiindulasi golyok lerakasa
 function initBubbles() {
@@ -259,6 +276,15 @@ function checkIfNeedToPop() {
         });
         $('#score').text(score);
         delete bubbleList[lastBubbleId];
+        // hangeffekt
+        let randomValue = Math.random();
+        switch (true) {
+            case (randomValue < 0.5):
+                popSound.play();
+                break;
+            default:
+                popSound2.play();
+        }
     }
 }
 
@@ -269,11 +295,18 @@ function checkIfGameOver() {
     let length = bubbleList.filter(function(element){
         return element // az ures false-t ad vissza, igy nem szamolodik
     }).length
-    if (length == 0)
+    if (length == 0) {
         name = prompt('Nyertél! Add meg a neved:', 'Nyertes');
+        bgMusic.pause();
+        $('#music').css({color: 'white'});
+        winAudio.play();
+    }
     // vesztes: ha kerul golyo az also sorba is
     for(let i = 80; i<=89; i++) {
         if (bubbleList[i] != undefined) {
+            bgMusic.pause();
+            $('#music').css({color: 'white'});
+            lostAudio.play();
             name = prompt('Vesztettél! Add meg a neved:', 'Vesztes');
         }
     }
