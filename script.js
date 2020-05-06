@@ -7,7 +7,7 @@ let nextBubbleColor, waitingBubbleColor;
 let gameAreaOffset; // gamearea offsetje
 let targetX, targetY;   // annak koordinataja, ahova loni fogunk
 let newTargetX = 0;    // ebben lesz a cel, ha visszapattan a golyo
-let origTargetY;
+let origTargetY, targetYCenter; // visszapattanashoz
 let lastBubbleId = 49;  // legutobb lerakott golyo id-je
 
 // kiindulasi golyok lerakasa
@@ -149,8 +149,10 @@ function calcTargetX() {
 }
 
 // a targetY kiszamolasa az alapjan, hogy a valasztott X koordinatanal milyen alacsonyan van a legalacsonyabban levo golyo
+// note: a targetYCenter csak tovabbi hack a mockolt visszapattanashoz
 function calcTargetY() {
     let maxY = 0;
+    targetYCenter = 0;
     for (let i = 0; i< bubbleList.length; i++) {
         if (bubbleList[i] != null) {
             let elemX = calcCoordFromIndex(i)[0];
@@ -161,8 +163,16 @@ function calcTargetY() {
                     maxY = elemY;
                 }
             }
+            // hack
+            if (elemX > (newTargetX-bubbleSize/2) &&
+                elemX < (newTargetX+bubbleSize/2) ) {
+                if (elemY > targetYCenter) {
+                    targetYCenter = elemY;
+                }
+            }
         }  
     }
+    targetYCenter += bubbleSize;
     return(maxY + bubbleSize);
 }
 
@@ -185,8 +195,8 @@ function shoot() {
         bubble.animate({left: targetX, top: targetY}, 500);
         lastBubbleId = (targetX / bubbleSize) + (targetY / bubbleSize)*10;    //mert minden egyes sor 10 elemet jelent
     } else {
-        bubble.animate({left: targetX, top: origTargetY}, 500).animate({left: newTargetX, top: targetY}, 500);
-        lastBubbleId = (newTargetX / bubbleSize) + (targetY / bubbleSize)*10;    //mert minden egyes sor 10 elemet jelent
+        bubble.animate({left: targetX, top: origTargetY}, 500).animate({left: newTargetX, top: targetYCenter}, 500);
+        lastBubbleId = (newTargetX / bubbleSize) + (targetYCenter / bubbleSize)*10;    //mert minden egyes sor 10 elemet jelent
     }
     // adjuk meg az id-t a divnek, mentsuk tombbe
     bubbleList[lastBubbleId] = nextBubbleColor;
