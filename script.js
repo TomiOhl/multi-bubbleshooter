@@ -110,6 +110,7 @@ function setBubbleTarget(e) {
     targetX = e.pageX - gameAreaOffset.left - bubbleSize/2;
     targetX = calcTargetX();    // felulrijuk az oszlopba rakott valtozattal
     targetY = calcTargetY();
+    
     // kovetkezo golyo odamozgatasa
     shoot();
     // varakozo golyo legyen a kovetkezo golyo, jojjon uj varakozo
@@ -121,6 +122,7 @@ function setBubbleTarget(e) {
     $('.nextBubble').promise().done(function(){     // igy az animacio utan fog meghivodni
         checkIfNeedToPop();
     });
+    
 }
 
 // a targetX igazitasa, hogy oszlopban legyen
