@@ -1,5 +1,12 @@
 html {
-    background: black;
+    min-height: 100%;
+}
+body {
+    min-height: 100%;
+    background: linear-gradient(
+        to bottom right, #0266c8, #00a8ff
+    );
+    color: white;
 }
 #gamearea {
     position: absolute;
@@ -33,4 +40,16 @@ html {
 }
 .turquoise {
     background-color: turquoise;
+}
+.personal-card {
+    display: inline-block;
+    border: 1px solid gray;
+    color: black;
+    background-color: whitesmoke;
+    padding: 12px;
+    border-radius: 12px;
+    text-align: start;
+}
+.personal-card:hover {
+    box-shadow: 0 6px 6px 0 #3029299a;
 }
