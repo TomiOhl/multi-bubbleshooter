@@ -119,6 +119,7 @@ function setBubbleTarget(e) {
         checkIfNeedToPop();
         nextBubbleColor = waitingBubbleColor;
         addWaitingBubble();
+        checkIfGameOver();
     });
 }
 
@@ -176,9 +177,9 @@ function calcTargetY() {
     return(maxY + bubbleSize);
 }
 
-//
+// adott indexu elem koordinatai
 function calcCoordFromIndex(index) {
-    // eloszor visszafejtjuk a koordinatakat
+    // visszafejtjuk a koordinatakat
     // pl: 12-es index: 12 osztva 10 2 maradekot ad, ezert 2*bubbleSize az x koordinata
     //                  12 osztva 10 1.2, egesz resze 1, ezert 1*bubbleSize az y koordinata
     let coord = []
@@ -255,6 +256,22 @@ function checkIfNeedToPop() {
             $(this).remove();
         });
         delete bubbleList[lastBubbleId];
+    }
+}
+
+// loves utan ellenorizzuk, vege van-e a jateknak
+function checkIfGameOver() {
+    // nyeres: ha minden golyot sikerult eltuntetni
+    let length = bubbleList.filter(function(element){
+        return element // az ures false-t ad vissza, igy nem szamolodik
+    }).length
+    if (length == 0)
+        alert("Nyertél");
+    // vesztes: ha kerul golyo az also sorba is
+    for(let i = 80; i<=89; i++) {
+        if (bubbleList[i] != undefined) {
+            alert("Vesztettél");
+        }
     }
 }
 
