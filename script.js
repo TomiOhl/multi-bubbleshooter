@@ -264,16 +264,41 @@ function checkIfNeedToPop() {
 
 // loves utan ellenorizzuk, vege van-e a jateknak
 function checkIfGameOver() {
+    let name;
     // nyeres: ha minden golyot sikerult eltuntetni
     let length = bubbleList.filter(function(element){
         return element // az ures false-t ad vissza, igy nem szamolodik
     }).length
     if (length == 0)
-        alert("Nyertél");
+        name = prompt('Nyertél! Add meg a neved:', 'Nyertes');
     // vesztes: ha kerul golyo az also sorba is
     for(let i = 80; i<=89; i++) {
         if (bubbleList[i] != undefined) {
-            alert("Vesztettél");
+            name = prompt('Vesztettél! Add meg a neved:', 'Vesztes');
+        }
+    }
+    // eltaroljuk az eredmenyt a bekert nevvel, majd ujratoltjuk az oldalt
+    if (name) {
+        localStorage.setItem(name, score);
+        location.reload();
+    }
+}
+
+// toplista megjelenitese
+function updateTopList() {
+    // localStorage atpakolasa masik tombbe
+    let storage = [];
+    for (let i = 0; i < localStorage.length; i++) {
+        storage[i] = [localStorage.key(i), parseInt(localStorage.getItem(localStorage.key(i)))];
+    }
+    // tomb rendezese csokkenobe
+    storage.sort(function(a,b) {
+        return b[1] - a[1];
+    });
+    // legjobb 10 listahoz adasa
+    for (let elem of storage.keys()) {
+        if (elem < 10) {
+            $('#toplist').append(storage[elem][0] + ': ' + storage[elem][1] + ' pont<br>');
         }
     }
 }
@@ -287,4 +312,5 @@ $(document).ready(function () {
     addWaitingBubble();
     gameAreaOffset = gamearea[0].getBoundingClientRect();
     gamearea.on('click', setBubbleTarget);
+    updateTopList();
 });
