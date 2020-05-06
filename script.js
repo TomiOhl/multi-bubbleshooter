@@ -181,13 +181,14 @@ function calcCoordFromIndex(index) {
 function shoot() {
     let bubble = $('.nextBubble');
     // visszapattanas, sajnos elegge mockolt jellegu, bugos af de meg van animalva
-    if (newTargetX == 0)
+    if (newTargetX == 0) {
         bubble.animate({left: targetX, top: targetY}, 500);
-    else {
+        lastBubbleId = (targetX / bubbleSize) + (targetY / bubbleSize)*10;    //mert minden egyes sor 10 elemet jelent
+    } else {
         bubble.animate({left: targetX, top: origTargetY}, 500).animate({left: newTargetX, top: targetY}, 500);
+        lastBubbleId = (newTargetX / bubbleSize) + (targetY / bubbleSize)*10;    //mert minden egyes sor 10 elemet jelent
     }
     // adjuk meg az id-t a divnek, mentsuk tombbe
-    lastBubbleId = (targetX / bubbleSize) + (targetY / bubbleSize)*10;    //mert minden egyes sor 10 elemet jelent
     bubbleList[lastBubbleId] = nextBubbleColor;
     $('.nextBubble').attr('id', lastBubbleId);
     bubble.removeClass('nextBubble');
