@@ -296,12 +296,12 @@ function checkIfGameOver() {
         return element // az ures false-t ad vissza, igy nem szamolodik
     }).length
     if (length == 0) {
-        name = prompt('Nyertél! Add meg a neved:', 'Nyertes');
         bgMusic.pause();
         $('#music').css({color: 'white'});
         popSound.pause();
         popSound2.pause();
         winAudio.play();
+        name = prompt('Nyertél! Add meg a neved:', 'Nyertes');
     }
     // vesztes: ha kerul golyo az also sorba is
     for(let i = 80; i<=89; i++) {
