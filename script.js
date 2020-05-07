@@ -298,8 +298,6 @@ function checkIfGameOver() {
     if (length == 0) {
         bgMusic.pause();
         $('#music').css({color: 'white'});
-        popSound.pause();
-        popSound2.pause();
         winAudio.play();
         name = prompt('Nyertél! Add meg a neved:', 'Nyertes');
     }
@@ -307,8 +305,6 @@ function checkIfGameOver() {
     for(let i = 80; i<=89; i++) {
         if (bubbleList[i] != undefined) {
             bgMusic.pause();
-            popSound.pause();
-            popSound2.pause();
             $('#music').css({color: 'white'});
             lostAudio.play();
             name = prompt('Vesztettél! Add meg a neved:', 'Vesztes');
