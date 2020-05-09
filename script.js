@@ -1,4 +1,4 @@
-let N = 10; // oszlop, sor
+let N = 10; // oszlop, sor. Majdnem megvaltoztathato szabadon, de a checkIfNeedToPop() pl biztosan modositasra szorulna, tobbi elvileg dinamikus
 let bubbleSize = 600 / N; // mert 600px a gameareank
 let gamearea;
 let pad;
@@ -69,9 +69,8 @@ function getColor() {
     }
 }
 
-// legalso sor legyen elkulonitve
+// legalso sor legyen elkulonitve, vagyis maga a pad
 function initShooterPad() {
-    // maga a pad
     pad = $('<div></div>');
     pad.addClass('pad');
     pad.css({
@@ -170,8 +169,8 @@ function calcTargetX() {
 // a targetY kiszamolasa az alapjan, hogy a valasztott X koordinatanal milyen alacsonyan van a legalacsonyabban levo golyo
 // note: a targetYCenter csak tovabbi hack a mockolt visszapattanashoz
 function calcTargetY() {
-    let maxY = 0;
-    targetYCenter = 0;
+    let maxY = -bubbleSize; // mivel majd a bubbleSize hozza lesz adva a vegen
+    targetYCenter = -bubbleSize;
     for (let i = 0; i< bubbleList.length; i++) {
         if (bubbleList[i] != null) {
             let elemX = calcCoordFromIndex(i)[0];
@@ -209,13 +208,13 @@ function calcCoordFromIndex(index) {
 // golyo kivalasztott helyre mozgatasanak logikaja
 function shoot() {
     let bubble = $('.nextBubble');
-    // visszapattanas, sajnos elegge mockolt jellegu, bugos af de meg van animalva
+    // visszapattanas, sajnos elegge mockolt jellegu, de meg van animalva
     if (newTargetX == 0) {
         bubble.animate({left: targetX, top: targetY}, 500);
-        lastBubbleId = (targetX / bubbleSize) + (targetY / bubbleSize)*10;    //mert minden egyes sor 10 elemet jelent
+        lastBubbleId = (targetX / bubbleSize) + (targetY / bubbleSize)*N;    //mert minden egyes sor N elemet jelent
     } else {
         bubble.animate({left: targetX, top: origTargetY}, 500).animate({left: newTargetX, top: targetYCenter}, 500);
-        lastBubbleId = (newTargetX / bubbleSize) + (targetYCenter / bubbleSize)*10;    //mert minden egyes sor 10 elemet jelent
+        lastBubbleId = (newTargetX / bubbleSize) + (targetYCenter / bubbleSize)*N;    //mert minden egyes sor N elemet jelent
     }
     // adjuk meg az id-t a divnek, mentsuk tombbe
     bubbleList[lastBubbleId] = nextBubbleColor;
